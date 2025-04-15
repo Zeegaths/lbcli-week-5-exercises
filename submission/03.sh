@@ -5,8 +5,8 @@
 # Define the redeem script
 REDEEM_SCRIPT="522102da2f10746e9778dd57bd0276a4f84101c4e0a711f9cfd9f09cde55acbdd2d1912102bfde48be4aa8f4bf76c570e98a8d287f9be5638412ab38dede8e78df82f33fa352ae"
 
-# Use bitcoin-cli to decode the script and get the P2SH address
-P2SH_ADDRESS=$(bitcoin-cli -regtest decodescript $REDEEM_SCRIPT | jq -r '.p2sh')
+# Use bitcoin-cli to decode the script and extract the P2SH-Segwit address
+P2SH_SEGWIT=$(bitcoin-cli -named -regtest decodescript hexstring=$REDEEM_SCRIPT | jq -r '.segwit."p2sh-segwit"')
 
-# Print the P2SH address
-echo "$P2SH_ADDRESS"
+# Output the P2SH-Segwit address
+echo "$P2SH_SEGWIT"
