@@ -1,18 +1,7 @@
 #!/bin/bash
 
-# Define the transaction hex
+# Define transaction ID
 TX_HEX="020000000121654fa95d5a268abf96427e3292baed6c9f6d16ed9e80511070f954883864b100000000d90047304402201c97b48215f261055e41b765ab025e77a849b349698ed742b305f2c845c69b3f022013a5142ef61db1ff425fbdcdeb3ea370aaff5265eee0956cff9aa97ad9a357e301473044022000a402ec4549a65799688dd531d7b18b03c6379416cc8c29b92011987084e9f402205470e24781509c70e2410aaa6d827aa133d6df2c578e96a496b885584fb039200147522102da2f10746e9778dd57bd0276a4f84101c4e0a711f9cfd9f09cde55acbdd2d1912102bfde48be4aa8f4bf76c570e98a8d287f9be5638412ab38dede8e78df82f33fa352aeffffffff0188130000000000001600142c48d3401f6abed74f52df3f795c644b4398844600000000"
 
-# Extract the redeem script using string manipulation
-# Find the position after "0147" in the scriptSig
-SCRIPT_START=$(echo "$TX_HEX" | grep -b -o "0147" | head -1 | cut -d':' -f1)
-SCRIPT_START=$((SCRIPT_START + 4))
-
-# Extract from that position until "ffffffff"
-SCRIPT_END=$(echo "$TX_HEX" | grep -b -o "ffffffff" | head -1 | cut -d':' -f1)
-
-# Extract the script portion
-REDEEM_SCRIPT=${TX_HEX:$SCRIPT_START:$((SCRIPT_END-SCRIPT_START))}
-
-# Output the extracted redeem script
-echo "$REDEEM_SCRIPT"
+# Use bitcoin-cli to decode the raw transaction
+bitcoin-cli -regtest decoderawtransaction $TX_HEX | jq -r '.vin[0].scriptSig.asm' | awk '{print $NF}'
